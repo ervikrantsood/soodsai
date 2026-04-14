@@ -90,10 +90,10 @@
                                     <span id="res-time" style="font-size: 0.75rem; color: var(--text-dim);">--:--</span>
                                     <span style="font-size: 0.7rem; color: var(--text-dim);">| Interval:</span>
                                     <select id="interval-select" style="background: transparent; border: none; color: var(--primary); font-size: 0.75rem; cursor: pointer; outline: none; font-weight: bold;">
-                                        <option value="0">Off</option>
+                                        <option value="0" selected>Off</option>
                                         <option value="1">1m</option>
                                         <option value="5">5m</option>
-                                        <option value="15" selected>15m</option>
+                                        <option value="15">15m</option>
                                         <option value="30">30m</option>
                                         <option value="60">1h</option>
                                     </select>
@@ -297,7 +297,7 @@
                 }
             }
             document.getElementById('interval-select').onchange = setupAutoRefresh;
-            setupAutoRefresh(); // Init default 15m
+            setupAutoRefresh(); // Init default (now 'Off' by default)
 
             document.getElementById('re-analyze-btn').onclick = () => btn.click();
 
