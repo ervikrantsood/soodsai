@@ -1,0 +1,28 @@
+import os
+from dotenv import load_dotenv
+
+# Load .env file (works both locally and on Render/Heroku)
+load_dotenv()
+
+# ─────────────────────────────────────────
+#  API KEYS — Update your keys here
+# ─────────────────────────────────────────
+# ─────────────────────────────────────────
+#  API KEYS — Managed in api_keys.py
+# ─────────────────────────────────────────
+try:
+    from api_keys import KEYS as GEMINI_API_KEYS
+except ImportError:
+    GEMINI_API_KEYS = [
+        os.getenv("GEMINI_API_KEY_1", "AIzaSyABP2-9VZcNbr6UnhDs-dghkdPk2BNkKGY"),
+        os.getenv("GEMINI_API_KEY_2", "AIzaSyBo5y2GAPsKR1DSb_CofFI_CspH2SRv2yk"),
+        os.getenv("GEMINI_API_KEY_3", "AIzaSyAjLJG1m0Y4LpGep7W3jd-libilm8Y3a1A")
+    ]
+
+
+# ─────────────────────────────────────────
+#  App Settings
+# ─────────────────────────────────────────
+DEFAULT_TICKER   = "USO"
+DEFAULT_LANGUAGE = "Hinglish"
+SERVER_PORT      = int(os.getenv("PORT", 5000))

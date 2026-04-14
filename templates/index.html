@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOOD AI | Professional Trading Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v={{ range(1, 10000) | random }}">
+</head>
+<body id="main-body">
+    <div class="aura aura-1"></div>
+    <div class="aura aura-2"></div>
+
+    <div class="header-controls">
+        <select id="lang-select" class="lang-dropdown">
+            <option value="Hinglish">Hinglish</option>
+            <option value="English">English</option>
+            <option value="Hindi">Hindi</option>
+            <option value="Tamil">Tamil</option>
+            <option value="Malayalam">Malayalam</option>
+            <option value="Arabic">العربية (Arabic)</option>
+        </select>
+        <div class="eye-btn" id="theme-toggle" title="Toggle Light/Dark Mode">🌙</div>
+        <div class="eye-btn" id="privacy-toggle" title="Toggle Privacy Mode">👁️</div>
+    </div>
+
+    <section class="hero" id="hero-section">
+        <div class="container">
+            <h4 class="neon-text" style="font-size: 0.9rem; letter-spacing: 4px; margin-bottom: 20px;">PROJECT BY VIKRANT SOOD</h4>
+            <div class="brand-glitch">SOOD AI</div>
+            
+            <div class="glass-card" style="max-width: 800px; margin: 60px auto 0; text-align: left;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                    <div><label>SYMBOL / TICKER</label><input type="text" id="symbol" class="input-field" placeholder="e.g. USO"></div>
+                    <div><label>BUY PRICE</label><input type="number" id="buy_price" class="input-field privacy-target" placeholder="0.00"></div>
+                    <div><label>QUANTITY</label><input type="number" id="quantity" class="input-field privacy-target" placeholder="0"></div>
+                </div>
+                
+                <button id="analyze-btn" class="btn-glow" style="margin-top: 30px; position: relative; overflow: hidden; height: 70px;">
+                    <span id="btn-text">RUN SYSTEM ANALYSIS</span>
+                    <div id="funny-loader" style="display: none; align-items: center; justify-content: center; gap: 15px; width: 100%; height: 100%;">
+                        <div class="orb"></div>
+                        <span id="funny-msg" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 250px;">Bhai ruk ja...</span>
+                    </div>
+                </button>
+                <div id="history-container" class="history-container"></div>
+                <p id="status-msg" style="text-align: center; margin-top: 15px; font-weight: bold; color: var(--primary);"></p>
+            </div>
+
+            <div class="social-hero">
+                <a href="https://instagram.com/ervikrantsood" target="_blank" class="social-link"><i class="fa-brands fa-instagram"></i> ervikrantsood</a>
+                <a href="https://youtube.com/@ervikrantsood" target="_blank" class="social-link"><i class="fa-brands fa-youtube"></i> ervikrantsood</a>
+                <a href="https://x.com/ervikrantsood" target="_blank" class="social-link"><i class="fa-brands fa-x-twitter"></i> ervikrantsood</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="result-section" style="display: none; min-height: 100vh; padding: 0;">
+        <div class="container" style="width: 100%;">
+            <div id="action-badge" class="action-badge" style="margin: 0 auto 20px;">WAIT</div>
+            
+            <div class="result-grid">
+                <!-- SIDEBAR (LEFT) - SYSTEM INPUT DATA -->
+                <div class="x-sidebar left-mode">
+                    <h3 style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 1.5rem; color: var(--primary);">🔬</span> SYSTEM INPUT DATA
+                    </h3>
+                    <div id="indicator-insights-container">
+                        <div class="sidebar-card">
+                            <p style="color: var(--text-dim); font-size: 0.85rem;">Run analysis to see model inputs.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MAIN ANALYSIS (CENTER) -->
+                <div style="min-width: 0;">
+                    <div class="glass-card">
+                        <!-- UPDATED HEADER: TICKER | PNL | PRICE -->
+                        <div class="result-header">
+                            <div>
+                                <h2 style="font-size: 3.5rem; color: #fff; margin: 0;" id="res-ticker">---</h2>
+                            </div>
+                            <div style="text-align: center;">
+                                <span id="res-pnl" class="privacy-target" style="padding: 5px 15px; border-radius: 20px; font-weight: 800; font-size: 1.2rem;">0.00%</span>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-family: var(--font-heading); font-size: 2.8rem; color: var(--primary); font-weight: 800;" id="res-price">$0.00</div>
+                                <div style="display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-top: 5px;">
+                                    <span id="res-time" style="font-size: 0.75rem; color: var(--text-dim);">--:--</span>
+                                    <span style="font-size: 0.7rem; color: var(--text-dim);">| Interval:</span>
+                                    <select id="interval-select" style="background: transparent; border: none; color: var(--primary); font-size: 0.75rem; cursor: pointer; outline: none; font-weight: bold;">
+                                        <option value="0">Off</option>
+                                        <option value="1">1m</option>
+                                        <option value="5">5m</option>
+                                        <option value="15" selected>15m</option>
+                                        <option value="30">30m</option>
+                                        <option value="60">1h</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SECONDARY STATUS BAR -->
+                        <div class="secondary-header-bar">
+                            <div style="color: var(--text-dim);">Total Investment: <span id="res-investment" class="privacy-target" style="color: white; font-weight: bold;">$0.00</span></div>
+                            <div style="color: var(--text-dim);">Current Status: <span id="res-status-label" class="privacy-target" style="font-weight: bold;">Neutral</span></div>
+                        </div>
+                        
+                        <div class="analysis-content">
+                            <div id="res-analysis" style="display: flex; flex-direction: column; gap: 0;">Analysis...</div>
+                        </div>
+                        
+                        <div style="margin-top: 30px; display: flex; gap: 15px;">
+                            <button id="re-analyze-btn" class="contact-pill" style="margin: 0; background: var(--secondary); border: none; font-weight: bold;">🔄 RE-ANALYZE NOW</button>
+                            <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" style="background: var(--card-bg); border: 1px solid var(--border); color: white; padding: 10px 20px; border-radius: 20px; cursor: pointer;">↑ New Analysis</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SIDEBAR (RIGHT) - SOCIAL & HEADLINES -->
+                <div class="x-sidebar right-mode">
+                    <!-- SOCIAL PULSE -->
+                    <h3 style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                        <i class="fa-brands fa-x-twitter" style="font-size: 1.5rem; color: #1DA1F2;"></i> SOCIAL PULSE
+                    </h3>
+                    <div id="x-feed-container" style="margin-bottom: 30px;">
+                        <div class="sidebar-card">
+                            <p style="color: var(--text-dim); font-size: 0.85rem;">Waiting for pulse data...</p>
+                        </div>
+                    </div>
+
+                    <!-- TOP HEADLINES -->
+                    <h3 style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 1.5rem; color: var(--secondary);">📰</span> TOP HEADLINES
+                    </h3>
+                    <div id="news-feed-container" style="max-height: 500px; overflow-y: auto;">
+                        <div class="sidebar-card">
+                            <p style="color: var(--text-dim); font-size: 0.85rem;">Waiting for news signals...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <h3 class="neon-text" style="font-size: 1.5rem; margin-bottom: 20px;">Sood AI Trading Dashboard</h3>
+            <p style="color: var(--text-dim); margin-bottom: 30px;">Professional Grade Intraday Analysis. Designed for Stealth & Strategy.</p>
+            <div class="footer-socials">
+                <a href="https://instagram.com/ervikrantsood" target="_blank" style="color: #E1306C;"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://youtube.com/@ervikrantsood" target="_blank" style="color: #FF0000;"><i class="fa-brands fa-youtube"></i></a>
+                <a href="https://x.com/ervikrantsood" target="_blank" style="color: #1DA1F2;"><i class="fa-brands fa-x-twitter"></i></a>
+            </div>
+            <div>
+                <a href="#" class="contact-pill">Premium Tiers</a>
+                <a href="#" class="contact-pill">Vikrant Sood © 2026</a>
+            </div>
+        </div>
+    </footer>
+
+    <style>
+        .header-controls { position: fixed; top: 30px; right: 30px; z-index: 1000; display: flex; align-items: center; gap: 15px; }
+        .lang-dropdown { background: #111; color: white; border: 1px solid var(--border); padding: 12px 20px; border-radius: 100px; font-weight: 600; cursor: pointer; backdrop-filter: blur(10px); outline: none; transition: 0.3s; }
+        .lang-dropdown option { background: #111; color: white; }
+        .lang-dropdown:hover { border-color: var(--primary); }
+        .orb { width: 18px; height: 18px; background: white; border-radius: 50%; box-shadow: 0 0 15px white; animation: bounce 0.5s infinite alternate; }
+        @keyframes bounce { from { transform: scale(0.8); } to { transform: scale(1.2); } }
+        #funny-loader { background: linear-gradient(135deg, var(--secondary), var(--primary)); }
+        .pulse-strong-buy { background: #00ff00 !important; color: black !important; box-shadow: 0 0 50px #00ff00 !important; }
+        .pulse-strong-sell { background: #ff0000 !important; color: white !important; box-shadow: 0 0 50px #ff0000 !important; }
+        .pulse-profit { background: #ffcc00 !important; color: black !important; box-shadow: 0 0 50px #ffcc00 !important; }
+        .eye-btn { position: static; }
+        .insight-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; }
+        .insight-label { color: var(--text-dim); font-weight: 600; }
+        .insight-value { color: var(--primary); font-family: monospace; }
+        .privacy-active .privacy-target { filter: blur(8px); pointer-events: none; user-select: none; }
+        .social-hero { margin-top: 30px; display: flex; justify-content: center; gap: 20px; }
+        .social-link { color: var(--text-dim); text-decoration: none; font-size: 0.9rem; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+        .social-link:hover { color: var(--primary); transform: translateY(-2px); }
+        .social-link i { font-size: 1.2rem; }
+        .footer-socials { margin-bottom: 30px; display: flex; justify-content: center; gap: 25px; font-size: 1.5rem; }
+        .footer-socials a { transition: 0.3s; }
+        .footer-socials a:hover { transform: scale(1.2); filter: brightness(1.2); }
+        .left-mode { order: -1; }
+    </style>
+
+    <script>
+        const funnyMessagesDefault = {
+            'Hinglish': [
+                "Bhai ruk ja, Laxmi Chit Fund nahi hai!",
+                "Risk hai toh Ishq hai, par dimaag bhi chahiye!",
+                "Stop-loss lagaya ya direct Bhagwan bharose?",
+                "Market volatile hai, par mera dimaag stable hai!",
+                "Paisa double karne ka scheme load ho raha hai..."
+            ],
+            'English': [
+                "Hold tight, even the charts are sweating!",
+                "Staring at the screen won't make it green.",
+                "Buying the dip... or just more chips?",
+                "To trade or not to trade? That is the question.",
+                "AI is consulting the financial gods..."
+            ],
+            'Hindi': [
+                "भाई रुक जा, लक्ष्मी चिट फंड नहीं है!",
+                "रिस्क है तो इश्क है, पर दिमाग भी चाहिए!",
+                "स्टॉप-लॉस लगाया या सीधा भगवान भरोसे?",
+                "मार्केट गरम है, थोड़ा इंतज़ार करें!",
+                "पैसा डबल करने की स्कीम लोड हो रही है..."
+            ],
+            'Tamil': [
+                "Porumaiyaga irungal, market konjam tension-ah irukku!",
+                "Kaila kaasu, vaaila dhosa... wait pannunga!",
+                "Stop-loss vachiya illa saami mela baarama?",
+                "Market volatile, aana namma dimaag fix-u!",
+                "Profit varum... aana late-ah varum!"
+            ],
+            'Malayalam': [
+                "Sabarikkuka, market onnu choodayatte!",
+                "Profit varuvanal ellavarum santhoshikkum!",
+                "Stop-loss vecho, atho ellam daivathinte kayyilo?",
+                "Market volatile aanu, namukku nokkam!",
+                "Kure thante paisa double akkan ponu..."
+            ],
+            'Arabic': [
+                "اصبر، السوق مو مثل بنك التسليف!",
+                "المخاطرة زينة، بس تحتاج عقل!",
+                "حطيت وقف الخسارة ولا على البركة؟",
+                "السوق مولع، انتظر شوي!",
+                "جاري تحميل خطة الثراء السريع..."
+            ]
+        };
+
+        window.onload = () => {
+            console.log("--- Dashboard Initialization Started ---");
+            const btn = document.getElementById('analyze-btn');
+            const funnyLoader = document.getElementById('funny-loader');
+            const funnyText = document.getElementById('funny-msg');
+            const btnText = document.getElementById('btn-text');
+            const langSelect = document.getElementById('lang-select');
+            const historyContainer = document.getElementById('history-container');
+            const xFeedContainer = document.getElementById('x-feed-container');
+            const newsFeedContainer = document.getElementById('news-feed-container');
+            const insightContainer = document.getElementById('indicator-insights-container');
+
+            document.getElementById('privacy-toggle').onclick = () => { 
+                document.getElementById('main-body').classList.toggle('privacy-active'); 
+            };
+
+            // Theme Management
+            const themeToggle = document.getElementById('theme-toggle');
+            const body = document.getElementById('main-body');
+            
+            if (localStorage.getItem('sood_theme') === 'light') {
+                body.classList.add('light-mode');
+                themeToggle.innerText = '☀️';
+            }
+
+            themeToggle.onclick = () => {
+                body.classList.toggle('light-mode');
+                const isLight = body.classList.contains('light-mode');
+                themeToggle.innerText = isLight ? '☀️' : '🌙';
+                localStorage.setItem('sood_theme', isLight ? 'light' : 'dark');
+            };
+
+            // Smart Header Logic
+            let lastScroll = 0;
+            const header = document.querySelector('.header-controls');
+            window.addEventListener('scroll', () => {
+                const currentScroll = window.pageYOffset;
+                if (currentScroll <= 0) {
+                    header.classList.remove('hidden');
+                    return;
+                }
+                if (currentScroll > lastScroll && !header.classList.contains('hidden')) {
+                    header.classList.add('hidden');
+                } else if (currentScroll < lastScroll && header.classList.contains('hidden')) {
+                    header.classList.remove('hidden');
+                }
+                lastScroll = currentScroll;
+            });
+
+            // Auto-Refresh Logic
+            let refreshInterval;
+            function setupAutoRefresh() {
+                if (refreshInterval) clearInterval(refreshInterval);
+                const mins = parseInt(document.getElementById('interval-select').value);
+                if (mins > 0) {
+                    console.log(`Setting auto-refresh for ${mins} minutes`);
+                    refreshInterval = setInterval(() => {
+                        console.log("Auto-refresh triggered...");
+                        if (document.getElementById('result-section').style.display !== 'none') {
+                            btn.click();
+                        }
+                    }, mins * 60 * 1000);
+                }
+            }
+            document.getElementById('interval-select').onchange = setupAutoRefresh;
+            setupAutoRefresh(); // Init default 15m
+
+            document.getElementById('re-analyze-btn').onclick = () => btn.click();
+
+            function renderHistory() {
+                const history = JSON.parse(localStorage.getItem('sood_history') || '[]');
+                historyContainer.innerHTML = history.length ? '<span style="color:var(--text-dim); font-size:0.8rem; width:100%; text-align:center; margin-bottom:5px;">RECENT:</span>' : '';
+                history.forEach(h => {
+                    const pill = document.createElement('div');
+                    pill.className = 'history-pill';
+                    pill.innerText = `${h.symbol} @ ${h.buy_price || '0'}`;
+                    pill.onclick = () => { 
+                        document.getElementById('symbol').value = h.symbol; 
+                        document.getElementById('buy_price').value = h.buy_price; 
+                        document.getElementById('quantity').value = h.quantity; 
+                        btn.click(); 
+                    };
+                    historyContainer.appendChild(pill);
+                });
+            }
+
+            function renderNewsFeed(news) {
+                if (!news || news.length === 0) { newsFeedContainer.innerHTML = '<div class="sidebar-card"><div class="news-title">No Headlines Found.</div></div>'; return; }
+                newsFeedContainer.innerHTML = news.map(n => `<div class="sidebar-card"><span class="news-tag">LIVE</span><div class="news-title">${n.title || "Market Update"}</div><div style="font-size:0.75rem; color:var(--text-dim);">${n.source || "News"}</div></div>`).join('');
+            }
+
+            function renderXFeed(ticker, sentiment) {
+                const isBearish = sentiment.toLowerCase().includes('bearish');
+                const posts = isBearish ? [`Stay away from #${ticker}. 📉`, `#${ticker} panic selling.`, `#${ticker} support cracked.`] : [`Accumulating #${ticker}. 🚀`, `Loaded #${ticker}. RSI solid.`, `#${ticker} breakout!`];
+                xFeedContainer.innerHTML = posts.map(p => `<div class="sidebar-card x-card"><div class="x-header"><div class="x-avatar"></div><div class="x-handle">TraderPro<span>@TradePro</span></div></div><div class="x-body">${p}</div></div>`).join('');
+            }
+
+            function renderIndicatorInsights(indicators, sentiment, ticker) {
+                if (!indicators) return;
+                insightContainer.innerHTML = `
+                    <div class="sidebar-card">
+                        <div class="insight-row"><span class="insight-label">Price Source:</span><span class="insight-value">Yahoo 1m</span></div>
+                        <div class="insight-row"><span class="insight-label">EMA 9 / 21:</span><span class="insight-value">${indicators.EMA_9} / ${indicators.EMA_21}</span></div>
+                        <div class="insight-row"><span class="insight-label">EMA 200:</span><span class="insight-value">${indicators.EMA_200}</span></div>
+                        <div class="insight-row"><span class="insight-label">RSI (14):</span><span class="insight-value" style="color:${indicators.RSI > 70 ? '#ff3131' : (indicators.RSI < 30 ? '#00ff7f' : 'var(--primary)')}">${indicators.RSI}</span></div>
+                        <div class="insight-row"><span class="insight-label">VWAP:</span><span class="insight-value">${indicators.VWAP}</span></div>
+                        <hr style="border:0; border-top:1px solid var(--border); margin:10px 0;">
+                        <div style="font-size:0.8rem; color:var(--text-dim); margin-bottom:5px;">SOCIAL SENTIMENT:</div>
+                        <div style="font-size:0.85rem; color:white; font-style:italic;">"${sentiment}"</div>
+                    </div>
+                `;
+            }
+
+            btn.addEventListener('click', async () => {
+                const selectedLang = langSelect.value;
+                const ticker = document.getElementById('symbol').value.toUpperCase();
+                
+                btn.disabled = true;
+                btnText.style.display = 'none';
+                funnyLoader.style.display = 'flex';
+                
+                // Pool AI-generated mantras with defaults
+                const aiMantras = JSON.parse(localStorage.getItem('sood_ai_mantras') || '[]');
+                const defaultMsgs = (funnyMessagesDefault[selectedLang] || funnyMessagesDefault['English']);
+                const msgs = aiMantras.length > 0 ? [...aiMantras, ...defaultMsgs] : defaultMsgs;
+                
+                // Pick a random starting message
+                let mIndex = Math.floor(Math.random() * msgs.length);
+                funnyText.innerText = msgs[mIndex];
+                
+                const mInt = setInterval(() => { 
+                    mIndex = (mIndex + 1) % msgs.length;
+                    funnyText.innerText = msgs[mIndex]; 
+                }, 2500);
+
+                const payload = { symbol: ticker, buy_price: parseFloat(document.getElementById('buy_price').value) || 0, quantity: parseFloat(document.getElementById('quantity').value) || 0, lang: selectedLang };
+
+                try {
+                    const res = await fetch('/analyze', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
+                    if (!res.ok) throw new Error(`Server Status: ${res.status}`);
+                    
+                    const data = await res.json();
+                    
+                    document.getElementById('res-ticker').innerText = data.ticker;
+                    document.getElementById('res-price').innerText = '$' + parseFloat(data.price).toFixed(2);
+                    const localTime = new Date().toLocaleString(undefined, { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+                    document.getElementById('res-time').innerText = 'Analysis Time: ' + localTime;
+                    
+                    const pnlVal = parseFloat(data.pnl);
+                    const pnlEl = document.getElementById('res-pnl');
+                    pnlEl.innerText = data.pnl;
+                    pnlEl.className = 'privacy-target ' + (pnlVal > 0 ? 'pnl-plus' : pnlVal < 0 ? 'pnl-minus' : 'pnl-zero');
+
+                    const absPnL = (parseFloat(data.price) - payload.buy_price) * payload.quantity;
+                    const statusLabel = document.getElementById('res-status-label');
+                    const labelText = pnlVal > 0 ? (selectedLang === 'Hindi' ? 'मुनाफा' : 'PROFIT') : (selectedLang === 'Hindi' ? 'नुकसान' : 'LOSS');
+                    statusLabel.innerText = `${pnlVal !== 0 ? labelText : 'NEUTRAL'}: ${absPnL >= 0 ? '+' : '-'}$${Math.abs(absPnL).toLocaleString()}`;
+                    statusLabel.style.color = pnlVal > 0 ? '#00ff7f' : pnlVal < 0 ? '#ff3131' : '#fff';
+
+                    document.getElementById('res-investment').innerText = '$' + (payload.buy_price * payload.quantity).toLocaleString();
+                    renderXFeed(data.ticker, data.social_pulse);
+                    renderNewsFeed(data.news);
+                    renderIndicatorInsights(data.indicators, data.social_pulse, data.ticker);
+
+                    // Extract AI Dynamic Signal and Mantra
+                    const funnySignalTag = data.analysis.match(/\[FUNNY_SIGNAL:\s*(.*?)\]/i);
+                    const mantraTag = data.analysis.match(/\[MANTRA:\s*(.*?)\]/i);
+                    const actionTag = data.analysis.match(/\[ACTION:\s*(.*?)\]/i);
+                    
+                    if (mantraTag) {
+                        const aiMantras = JSON.parse(localStorage.getItem('sood_ai_mantras') || '[]');
+                        if (!aiMantras.includes(mantraTag[1])) {
+                            aiMantras.push(mantraTag[1]);
+                            localStorage.setItem('sood_ai_mantras', JSON.stringify(aiMantras.slice(-50))); // Keep last 50 unique mantras
+                        }
+                    }
+                    
+                    const badge = document.getElementById('action-badge');
+                    const actionStr = actionTag ? actionTag[1] : 'HOLD';
+                    const funnyStr = funnySignalTag ? funnySignalTag[1] : actionStr;
+                    
+                    badge.innerText = `${actionStr} - "${funnyStr}"`;
+                    badge.className = "action-badge " + (actionStr.includes('BUY') ? 'pulse-buy' : actionStr.includes('SELL') ? 'pulse-sell' : 'pulse-wait');
+                    badge.style.display = 'block';
+
+                    // --- ADVANCED ANALYSIS PARSER (CARD & INSIGHT SYSTEM) ---
+                    let rawAnalysis = data.analysis.replace(/\[ACTION:\s*.*?\]/i, "").replace(/\[FUNNY_SIGNAL:\s*.*?\]/i, "").replace(/\[MANTRA:\s*.*?\]/i, "").trim();
+                    
+                    // 1. DATA HIGHLIGHTER (Regex to wrap prices, %, and EMA levels)
+                    function highlightData(text) {
+                        return text.replace(/(\d+(\.\d+)?%?|\b(EMA\s*\d+|VWAP|RSI)\b)/g, '<span class="data-highlight">$1</span>');
+                    }
+
+                    // 2. SECTION EXCAVATOR (Split by Headers)
+                    // 2. SECTION EXCAVATOR (Split by Headers)
+                    const sections = rawAnalysis.split(/(###|(?=MARKET MOOD:)|(?=INTRADAY PREDICTION:)|(?=ANALYSIS RATIONALE:)|(?=FINAL STRATEGIC ADVICE:))/g);
+                    let finalHTML = "";
+                    
+                    let moodContent = "", predContent = "", ratContent = "", adviceContent = "";
+                    
+                    // Logic to categorize sections even if AI doesn't use ###
+                    sections.forEach(s => {
+                        const lowS = s.toUpperCase();
+                        if (lowS.includes("MARKET MOOD")) moodContent = s.replace(/.*MARKET MOOD:?/i, "").trim();
+                        else if (lowS.includes("INTRADAY PREDICTION")) predContent = s.replace(/.*INTRADAY PREDICTION:?/i, "").trim();
+                        else if (lowS.includes("ANALYSIS RATIONALE") || lowS.includes("RATIONALE")) ratContent = s.replace(/.*ANALYSIS RATIONALE:?/i, "").trim();
+                        else if (lowS.includes("FINAL STRATEGIC ADVICE")) adviceContent = s.replace(/.*FINAL STRATEGIC ADVICE:?/i, "").trim();
+                    });
+
+                    // Build MARKET MOOD CARD
+                    if (moodContent) {
+                        finalHTML += `
+                        <div class="insight-card">
+                            <div class="section-tag"><i class="fa-solid fa-cloud-sun"></i> Market Mood</div>
+                            <div style="line-height:1.4; font-size:1.25rem;">${highlightData(moodContent.replace(/###/g, "").replace(/\*/g, ""))}</div>
+                        </div>`;
+                    }
+
+                    // Build PREDICTION CARD
+                    if (predContent) {
+                        finalHTML += `
+                        <div class="insight-card prediction">
+                            <div class="section-tag"><i class="fa-solid fa-bullseye"></i> Intraday Prediction</div>
+                            <div style="line-height:1.4; font-size:1.25rem;">${highlightData(predContent.replace(/###/g, "").replace(/\*/g, ""))}</div>
+                        </div>`;
+                    }
+
+                    // Build RATIONALE SECTION
+                    if (ratContent) {
+                        const points = ratContent.split(/(\d+\.\s+)/).filter(p => p.trim() && !p.match(/^\d+\.\s+$/));
+                        let pointsHTML = "";
+                        points.forEach((p, i) => {
+                            if (p.trim()) {
+                                pointsHTML += `
+                                <div class="point-box">
+                                    <div class="point-num">${i + 1}</div>
+                                    <div style="font-size:1.2rem; line-height:1.4;">${highlightData(p.replace(/###/g, "").replace(/\*/g, "").replace(/RATIONALE:?/i, "").trim())}</div>
+                                </div>`;
+                            }
+                        });
+                        
+                        finalHTML += `
+                        <div class="insight-card rationale" style="background:transparent; border:none; padding:0;">
+                            <div class="section-tag"><i class="fa-solid fa-brain"></i> Analysis Rationale</div>
+                            ${pointsHTML}
+                        </div>`;
+                    }
+
+                    // Build FINAL ADVICE CARD
+                    if (adviceContent) {
+                        finalHTML += `
+                        <div class="insight-card advice">
+                            <div class="section-tag" style="color:#00ff7f;"><i class="fa-solid fa-star"></i> Final Strategic Advice</div>
+                            <div style="line-height:1.4; font-size:1.35rem; font-weight:800; color:#00ff7f;">${highlightData(adviceContent.replace(/###/g, "").replace(/\*/g, ""))}</div>
+                        </div>`;
+                    }
+
+                    document.getElementById('res-analysis').innerHTML = finalHTML || highlightData(rawAnalysis);
+                    document.getElementById('result-section').style.display = 'flex';
+                    
+                    const history = JSON.parse(localStorage.getItem('sood_history') || '[]');
+                    if (!history.find(h => h.symbol === ticker)) {
+                        history.unshift({ symbol: ticker, buy_price: payload.buy_price, quantity: payload.quantity });
+                        localStorage.setItem('sood_history', JSON.stringify(history.slice(0, 3)));
+                        renderHistory();
+                    }
+
+                    setTimeout(() => window.scrollTo({ top: document.getElementById('result-section').offsetTop - 50, behavior: 'smooth' }), 200);
+                } catch (err) { alert('Sood AI Integration Error: ' + err.message); }
+                finally { clearInterval(mInt); btn.disabled = false; funnyLoader.style.display = 'none'; btnText.style.display = 'block'; }
+            });
+
+            renderHistory();
+        };
+    </script>
+</body>
+</html>
