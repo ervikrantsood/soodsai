@@ -14,9 +14,10 @@ try:
     from api_keys import KEYS as GEMINI_API_KEYS
 except ImportError:
     GEMINI_API_KEYS = [
-        os.getenv("GEMINI_API_KEY_1", "AIzaSyABP2-9VZcNbr6UnhDs-dghkdPk2BNkKGY"),
-        os.getenv("GEMINI_API_KEY_2", "AIzaSyBo5y2GAPsKR1DSb_CofFI_CspH2SRv2yk"),
-        os.getenv("GEMINI_API_KEY_3", "AIzaSyAjLJG1m0Y4LpGep7W3jd-libilm8Y3a1A")
+        os.getenv("GEMINI_API_KEY_1", "AIzaSyBIIKH3hpTF-2wiiyWOb_oZzbmzoi4-iww"),        
+        os.getenv("GEMINI_API_KEY_2", "AIzaSyABP2-9VZcNbr6UnhDs-dghkdPk2BNkKGY"),
+        os.getenv("GEMINI_API_KEY_3", "AIzaSyBo5y2GAPsKR1DSb_CofFI_CspH2SRv2yk"),
+        os.getenv("GEMINI_API_KEY_4", "AIzaSyAjLJG1m0Y4LpGep7W3jd-libilm8Y3a1A")
     ]
 
 
