@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+.git/
+.gitignore
+backups/
+documents/
+scratch/
+sood_ai.db
+session_history.log
+change_ledger.csv
+Dockerfile
+README.md
+system_design.md
+HLD.md
+LLD.md

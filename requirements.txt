@@ -1,7 +1,11 @@
+Flask
+Flask-Login
+Authlib
+SQLAlchemy
+psycopg2-binary
 pandas
 yfinance
 google-genai
 python-dotenv
 requests
 gunicorn
-Flask
