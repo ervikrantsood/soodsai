@@ -22,6 +22,7 @@ COPY . .
 # Expose the terminal's operational port
 EXPOSE 8080
 
-# Command to synchronize and launch the Mission Control server
-# We use Gunicorn with 4 workers for high-concurrency tactical load
-CMD ["gunicorn", "--bind", "0.0.0.0:8080", "--workers", "4", "app:app"]
+# Command to synchronize and launch the Mission Control server.
+# Optimized: 2 Workers with 4 Threads each (Gthread) to minimize memory footprint 
+# while maintaining high-concurrency performance for AI analysis.
+CMD ["gunicorn", "--bind", "0.0.0.0:8080", "--workers", "2", "--threads", "4", "--worker-class", "gthread", "app:app"]
