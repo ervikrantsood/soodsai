@@ -5,23 +5,15 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # ─────────────────────────────────────────
-#  API KEYS — Update your keys here
-# ─────────────────────────────────────────
-# ─────────────────────────────────────────
-#  API KEYS — Managed in api_keys.py
+#  API KEYS — Multi-key support
 # ─────────────────────────────────────────
 try:
     from api_keys import KEYS as GEMINI_API_KEYS
 except ImportError:
-    GEMINI_API_KEYS = [
-        os.getenv("GEMINI_API_KEY_1", "AIzaSyB1DYgkyVpQq1WpacpuHTcdRVugzPnoJ3w"),
-        os.getenv("GEMINI_API_KEY_2", "AIzaSyBIIKH3hpTF-2wiiyWOb_oZzbmzoi4-iww"),        
-        os.getenv("GEMINI_API_KEY_3", "AIzaSyDlKTxrRUaGV9OYV6gYC8SHpfbyOv4byCc"),
-        os.getenv("GEMINI_API_KEY_4", "AIzaSyAjLJG1m0Y4LpGep7W3jd-libilm8Y3a1A"),
-        os.getenv("GEMINI_API_KEY_5", "AIzaSyABP2-9VZcNbr6UnhDs-dghkdPk2BNkKGY"),
-        os.getenv("GEMINI_API_KEY_6", "AIzaSyBo5y2GAPsKR1DSb_CofFI_CspH2SRv2yk")
-    ]
-
+    # Fallback to .env or Environment Variables (for Render/Heroku)
+    # Expects a comma-separated string of keys
+    keys_str = os.getenv("GEMINI_API_KEYS", "")
+    GEMINI_API_KEYS = [k.strip() for k in keys_str.split(",") if k.strip()]
 
 # ─────────────────────────────────────────
 #  App Settings

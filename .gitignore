@@ -1,0 +1,29 @@
+# Environment variables (API keys, secrets)
+.env
+api_keys.py
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+dist/
+build/
+*.egg
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Sood AI Specifics
+*.db
+backups/
+scratch/
+session_history.log
+change_ledger.csv
